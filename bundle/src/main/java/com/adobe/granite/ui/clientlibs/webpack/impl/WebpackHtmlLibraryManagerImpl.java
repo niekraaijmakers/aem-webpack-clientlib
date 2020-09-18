@@ -98,8 +98,11 @@ public class WebpackHtmlLibraryManagerImpl implements WebpackHtmlLibraryManager 
     }
     
     private void printScripts(List<String> chunks, Map<String, String> completeChunkMap, Writer out, LibraryType type){
-        chunks.stream().map((chunk) -> completeChunkMap.get( chunk + ".js" ) ).filter(StringUtils::isNotBlank).forEach(script -> printScript(script, out, type));
-        chunks.stream().map((chunk) -> completeChunkMap.get( chunk + ".css") ).filter(StringUtils::isNotBlank).forEach(script -> printScript(script, out, type));
+        if(type == LibraryType.CSS){
+            chunks.stream().map((chunk) -> completeChunkMap.get( chunk + ".css") ).filter(StringUtils::isNotBlank).forEach(script -> printScript(script, out, type));
+        }else{
+            chunks.stream().map((chunk) -> completeChunkMap.get( chunk + ".js" ) ).filter(StringUtils::isNotBlank).forEach(script -> printScript(script, out, type));
+        }
         chunks.stream().map(completeChunkMap::get).filter(StringUtils::isNotBlank).forEach(script -> printScript(script, out, type));
     }
     
@@ -107,8 +110,15 @@ public class WebpackHtmlLibraryManagerImpl implements WebpackHtmlLibraryManager 
         
         final String output;
         if(type == LibraryType.JS){
+            if(!script.endsWith("js")){
+                return;
+            }
             output = String.format(SCRIPT_TAG,script);
         }else if(type == LibraryType.CSS){
+            if(!script.endsWith("css")){
+                return;
+            }
+            
             output = String.format(CSS_TAG,script);
         }else{
             output = "";
