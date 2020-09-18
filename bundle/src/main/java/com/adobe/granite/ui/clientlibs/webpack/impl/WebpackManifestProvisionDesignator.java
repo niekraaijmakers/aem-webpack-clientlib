@@ -64,7 +64,7 @@ public class WebpackManifestProvisionDesignator {
         
         String webpackCategory = clientLibResource.getValueMap().get(PN_MANIFEST_CATEGORY, String.class);
         
-        if(StringUtils.isNotBlank(webpackCategory)){
+        if(StringUtils.isNotBlank(webpackCategory) && ssrChunkKeyProviderServices.containsKey(webpackCategory)){
             
             RankedServices<WebpackSSRChunkKeyProvider<WebpackManifest>> categoryServices = ssrChunkKeyProviderServices.get(webpackCategory);
             return categoryServices.getList().stream().findFirst().orElse(null);
